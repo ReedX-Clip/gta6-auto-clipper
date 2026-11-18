@@ -1,0 +1,36 @@
+name: GTA 6 Auto Clipper Cloud
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+jobs:
+  run-clipper:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+bot:
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install FFmpeg & dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ffmpeg
+        pip install yt-dlp numpy scipy
+
+    - name: Run Auto Clipper Script
+      run: python clipper.py
+
+    - name: Save generated clips back to repository
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: "🤖 New GTA 6 clips generated automatically by Cloud Bot"
+        branch: main
+        file_pattern: 'Clips_Gata/*.mp4'
